@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Cutiepie!</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #0a0015; /* Dark purple/black background */
+    color: white;
+    text-align: center;
+    overflow: hidden;
+    height: 100vh;
+    position: relative;
+  }
+
+  /* Floating Hearts Background */
+  .bg-heart {
+    position: absolute;
+    color: rgba(255, 105, 180, 0.2);
+    animation: floatUp linear infinite;
+    z-index: 0;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(-10vh) scale(1.2) rotate(360deg); opacity: 0; }
+  }
+
+  h1, h2 { font-family: 'Caveat', cursive; color: #ff69b4; letter-spacing: 2px; }
+  h1 { font-size: 3.5em; text-shadow: 0 0 15px rgba(255, 105, 180, 0.8); }
+  h2 { font-size: 2.5em; }
+  p { font-size: 1.1em; margin-bottom: 20px; color: #f0f0f0; }
+
+  /* Buttons */
+  button {
+    background: linear-gradient(90deg, #ff007f, #9400d3);
+    border: none;
+    padding: 12px 30px;
+    border-radius: 30px;
+    color: white;
+    font-size: 1.2em;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(255, 0, 127, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 10;
+    position: relative;
+    margin-top: 20px;
+  }
+  button:hover { transform: scale(1.05); box-shadow: 0 8px 20px rgba(255, 0, 127, 0.6); }
+
+  /* Screens */
+  .screen {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease-in-out;
+    z-index: 5;
+  }
+  .screen.active { opacity: 1; pointer-events: auto; }
+
+  /* 1. Countdown */
+  .ring {
+    width: 150px; height: 150px;
+    border-radius: 50%;
+    border: 5px solid transparent;
+    border-top-color: #ff007f; border-left-color: #9400d3;
+    animation: spin 1s linear infinite;
+    display: flex; justify-content: center; align-items: center;
+    position: relative;
+  }
+  @keyframes spin { 100% { transform: rotate(360deg); } }
+  .ring h1 {
+    animation: spin reverse 1s linear infinite; 
+    font-size: 4em; margin: 0;
+  }
+
+  /* 2. Cute Intro */
+  .cute-gif { width: 180px; margin-bottom: 10px; }
+
+  /* 3. Real Image Cake Styling */
+  .real-cake-img {
+    width: 85%;
+    max-width: 350px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(255, 105, 180, 0.5);
+    margin: 30px 0;
+    border: 3px solid #ff69b4;
+    animation: cakeFloat 3s ease-in-out infinite;
+  }
+  @keyframes cakeFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  /* 4. Balloons */
+  .balloons-box { display: flex; gap: 20px; margin: 30px 0; height: 200px; align-items: flex-end; }
+  .balloon-wrapper { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+  .balloon {
+    width: 60px; height: 75px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+    position: relative; box-shadow: inset -5px -5px 10px rgba(0,0,0,0.2);
+    animation: floatB 2s infinite ease-in-out alternate;
+  }
+  .balloon::after { content: ''; position: absolute; bottom: -30px; left: 50%; width: 2px; height: 30px; background: rgba(255,255,255,0.5); }
+  .b1 { background: #ff69b4; animation-delay: 0s; }
+  .b2 { background: #ffd700; animation-delay: 0.2s; }
+  .b3 { background: #32cd32; animation-delay: 0.4s; }
+  .b4 { background: #00bfff; animation-delay: 0.6s; }
+  @keyframes floatB { to { transform: translateY(-15px); } }
+  .hidden-word { opacity: 0; font-family: 'Caveat', cursive; font-size: 2em; margin-top: 10px; color: #ff69b4; transition: opacity 0.3s; }
+  
+  /* 5. Swipeable Cards */
+  .card-stack { position: relative; width: 260px; height: 320px; margin: 20px auto; perspective: 1000px; }
+  .swipe-card {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    border-radius: 15px; border: 3px solid #ff69b4;
+    background-size: cover; background-position: center;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    transition: transform 0.5s ease, opacity 0.5s ease;
+    cursor: pointer;
+  }
+  /* Stacking visual */
+  .swipe-card:nth-child(1) { z-index: 3; transform: rotate(0deg); }
+  .swipe-card:nth-child(2) { z-index: 2; transform: rotate(3deg) translate(5px, 5px); }
+  .swipe-card:nth-child(3) { z-index: 1; transform: rotate(-3deg) translate(-5px, 10px); }
+  .swiped { transform: translateX(200px) rotate(20deg) !important; opacity: 0; pointer-events: none; }
+
+  /* 6. Envelope / Special Message */
+  .envelope-container { cursor: pointer; position: relative; margin: 40px 0; perspective: 800px; }
+  .envelope {
+    width: 300px; height: 200px; background: #9400d3; border-radius: 10px;
+    position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+  .flap {
+    position: absolute; top: 0; left: 0; border-left: 150px solid transparent;
+    border-right: 150px solid transparent; border-top: 100px solid #7a00ad;
+    transform-origin: top; transition: transform 0.6s; z-index: 4;
+  }
+  .letter {
+    position: absolute; bottom: 10px; left: 10px; right: 10px; height: 180px;
+    background: white; border-radius: 5px; padding: 20px; color: #333;
+    font-size: 1rem; transition: transform 0.6s; z-index: 2; display: flex; align-items: center; text-align: center;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2); font-family: 'Nunito', sans-serif;
+  }
+  .envelope::after {
+    content: ''; position: absolute; bottom: 0; left: 0;
+    border-left: 150px solid #8500bd; border-right: 150px solid #8500bd; border-bottom: 100px solid #6c0099; z-index: 3;
+  }
+  .envelope-container.open .flap { transform: rotateX(180deg); }
+  .envelope-container.open .letter { transform: translateY(-120px); z-index: 5; height: 250px; }
+
+  /* 7. Final Gift */
+  .gift { width: 150px; height: 150px; cursor: pointer; animation: floatB 2s infinite ease-in-out alternate; }
+
+  /* Confetti */
+  .confetti { position: absolute; width: 10px; height: 10px; z-index: 100; pointer-events: none; animation: fall linear forwards; }
+  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+</style>
+</head>
+<body>
+
+  <div id="heart-container"></div>
+
+  <div class="screen active" id="sc-countdown">
+    <div class="ring"><h1 id="countNumber">3</h1></div>
+    <br><p>Crafting your special moment...</p>
+  </div>
+
+  <div class="screen" id="sc-intro">
+    <img src="https://media.tenor.com/OS1E81fM0nMAAAAi/peach-goma.gif" class="cute-gif">
+    <h2>HAPPY BIRTHDAY ,<br>MERI JAAN IFRA🥳🍾🎂 !</h2>
+    <p>I LOVE YOU SO MUCH😘😘😘😘😘😘❤️</p>
+    <button onclick="nextScreen('sc-cake')">Start the surprise 🎁</button>
+  </div>
+
+  <div class="screen" id="sc-cake">
+    <h2>Make a Wish, Ifra! ✨</h2>
+    
+    <img src="5.png" alt="Ifra's Birthday Cake" class="real-cake-img">
+    
+    <button onclick="fireConfetti(50); setTimeout(() => nextScreen('sc-balloons'), 1500);">Cut the Cake 🔪</button>
+  </div>
+
+  <div class="screen" id="sc-balloons">
+    <h2>Pop all 4 balloons 🎈</h2>
+    <div class="balloons-box">
+      <div class="balloon-wrapper" onclick="popBalloon(this, 'AP ')">
+        <div class="balloon b1"></div>
+        <div class="hidden-word">AP</div>
+      </div>
+      <div class="balloon-wrapper" onclick="popBalloon(this, 'MERI')">
+        <div class="balloon b2"></div>
+        <div class="hidden-word">MERI</div>
+      </div>
+      <div class="balloon-wrapper" onclick="popBalloon(this, 'JAAN')">
+        <div class="balloon b3"></div>
+        <div class="hidden-word">JAAN</div>
+      </div>
+      <div class="balloon-wrapper" onclick="popBalloon(this, 'HO')">
+        <div class="balloon b4"></div>
+        <div class="hidden-word">HO Cutie</div>
+      </div>
+    </div>
+    <button id="balloonBtn" style="display:none;" onclick="nextScreen('sc-cards')">Next ➡️</button>
+  </div>
+
+  <div class="screen" id="sc-cards">
+    <h2>Some Sweet Moments 💞</h2>
+    <p>(Tap the cards to swipe)</p>
+    <div class="card-stack" id="cardStack">
+      <div class="swipe-card" style="background-image: url('1.jpg');" onclick="swipe(this)"></div>
+      <div class="swipe-card" style="background-image: url('2.jpg');" onclick="swipe(this)"></div>
+      <div class="swipe-card" style="background-image: url('3.jpg');" onclick="swipe(this)"></div>
+    </div>
+    <button id="cardBtn" style="display:none;" onclick="nextScreen('sc-message')">Open My Message 💌</button>
+  </div>
+
+  <div class="screen" id="sc-message">
+    <h2>A Special Message</h2>
+    <div class="envelope-container" onclick="openEnvelope(this)">
+      <div class="envelope">
+        <div class="flap"></div>
+        <div class="letter">
+          <b>Happy Birthday, Cutiepie! 🎉</b><br><br>
+          You deserve all the happiness, love, and smiles in the world today and always. I hope your day is filled with laughter and surprises! ❤️
+        </div>
+      </div>
+    </div>
+    <button id="msgBtn" style="opacity:0; pointer-events:none;" onclick="nextScreen('sc-gift')">Next ➡️</button>
+  </div>
+
+  <div class="screen" id="sc-gift">
+    <h2>One Last Thing...</h2>
+    <img src="https://cdn-icons-png.flaticon.com/512/4213/4213958.png" class="gift" onclick="nextScreen('sc-final')">
+    <p style="margin-top:20px;">Tap the gift 🎁</p>
+  </div>
+
+  <div class="screen" id="sc-final">
+    <img src="https://media.tenor.com/Z4w29B0D7D0AAAAi/peach-goma.gif" class="cute-gif">
+    <h1>Lots of love for you ❤️</h1>
+    <p>Once again, Happy Birthday! Hope you loved your surprise.</p>
+    <button onclick="location.reload()">Replay 🔁</button>
+  </div>
+
+<script>
+  // Flow Logic
+  function nextScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (id === 'sc-final') fireConfetti(100);
+  }
+
+  // 1. Countdown Logic
+  let count = 3;
+  let timer = setInterval(() => {
+    count--;
+    if (count > 0) {
+      document.getElementById('countNumber').innerText = count;
+    } else {
+      clearInterval(timer);
+      nextScreen('sc-intro');
+    }
+  }, 1000);
+
+  // 2. Background Hearts
+  function createHeart() {
+    const heart = document.createElement('div');
+    heart.innerHTML = '❤️';
+    heart.className = 'bg-heart';
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+    heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+    document.getElementById('heart-container').appendChild(heart);
+    setTimeout(() => heart.remove(), 10000);
+  }
+  setInterval(createHeart, 400);
+
+  // 3. Balloon Logic
+  let poppedCount = 0;
+  function popBalloon(el, word) {
+    let balloon = el.querySelector('.balloon');
+    let hiddenText = el.querySelector('.hidden-word');
+    if (balloon.style.display !== 'none') {
+      balloon.style.display = 'none';
+      hiddenText.style.opacity = '1';
+      fireConfetti(15);
+      poppedCount++;
+      if (poppedCount === 4) {
+        document.getElementById('balloonBtn').style.display = 'inline-block';
+      }
+    }
+  }
+
+  // 4. Swipe Cards Logic
+  let cardsSwiped = 0;
+  function swipe(card) {
+    card.classList.add('swiped');
+    cardsSwiped++;
+    if (cardsSwiped === 3) {
+      document.getElementById('cardBtn').style.display = 'inline-block';
+    }
+  }
+
+  // 5. Envelope Logic
+  function openEnvelope(env) {
+    env.classList.add('open');
+    setTimeout(() => {
+      let btn = document.getElementById('msgBtn');
+      btn.style.opacity = '1';
+      btn.style.pointerEvents = 'auto';
+    }, 1000);
+  }
+
+  // Confetti Function
+  function fireConfetti(amount) {
+    let colors = ['#ff69b4', '#ffd700', '#00bfff', '#32cd32', '#9400d3'];
+    for (let i = 0; i < amount; i++) {
+      let conf = document.createElement('div');
+      conf.className = 'confetti';
+      conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      conf.style.left = Math.random() * 100 + 'vw';
+      conf.style.top = -10 + 'px';
+      conf.style.animationDuration = (Math.random() * 2 + 2) + 's';
+      document.body.appendChild(conf);
+      setTimeout(() => conf.remove(), 4000);
+    }
+  }
+</script>
+
+</body>
+</html>
